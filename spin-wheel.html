@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Black Friday Coin Drop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--s1:#111;--s2:#1c1c1c;--line:rgba(255,255,255,.08);--mut:rgba(255,255,255,.55);--pink:#fe2c55;--cyan:#25f4ee;--gold:#ffc53d}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#000;color:#fff;font:15px/1.4 Inter,system-ui,sans-serif;overscroll-behavior:none}
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0}
+.bg i{position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(80px);opacity:.28;animation:drift 14s ease-in-out infinite alternate}
+.bg i:nth-child(1){background:var(--cyan);left:-35vmax;top:-30vmax}
+.bg i:nth-child(2){background:var(--pink);right:-35vmax;bottom:-30vmax;animation-delay:-7s}
+@keyframes drift{to{transform:translate(8vmax,6vmax) scale(1.1)}}
+.bg::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(#000,transparent 70%)}
+
+.app{position:relative;z-index:1;height:100%;height:100dvh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top) + 12px) 18px calc(env(safe-area-inset-bottom) + 14px)}
+
+.top{display:flex;align-items:center;justify-content:space-between;flex:none}
+.logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:17px;letter-spacing:-.4px}
+.logo img{width:28px;filter:drop-shadow(-1.5px -1px 0 var(--cyan)) drop-shadow(1.5px 1px 0 var(--pink))}
+.pill{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid var(--line);padding:6px 11px;border-radius:99px;backdrop-filter:blur(10px)}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--pink);animation:ping 1.5s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(254,44,85,.7)}70%{box-shadow:0 0 0 7px rgba(254,44,85,0)}}
+
+.head{text-align:center;flex:none;margin-top:clamp(8px,2.2vh,22px)}
+.tag{display:inline-flex;gap:6px;align-items:center;font-size:11px;font-weight:800;letter-spacing:.3px;color:var(--pink);background:rgba(254,44,85,.12);border:1px solid rgba(254,44,85,.3);padding:5px 11px;border-radius:99px}
+h1{font-weight:900;font-size:clamp(38px,min(12.5vw,7.4vh),64px);line-height:.95;letter-spacing:-.045em;margin:clamp(6px,1.2vh,12px) 0 4px;text-shadow:-2.5px -1.5px 0 var(--cyan),2.5px 1.5px 0 var(--pink)}
+.sub{font-size:clamp(13px,1.9vh,15px);color:var(--mut);font-weight:600}
+.sub b{color:#fff}
+.timer{display:inline-flex;align-items:center;gap:6px;margin-top:clamp(8px,1.4vh,14px);font-size:12px;color:var(--mut);font-weight:700}
+.timer b{background:var(--s2);border:1px solid var(--line);color:#fff;font-size:14px;font-weight:800;padding:4px 7px;border-radius:8px;font-variant-numeric:tabular-nums;min-width:32px;text-align:center}
+
+.area{flex:1;min-height:0;display:grid;place-items:center;margin:clamp(8px,1.5vh,16px) 0}
+.wheel-wrap{position:relative;width:300px;height:300px}
+.wheel-wrap::before{content:"";position:absolute;inset:-4%;border-radius:50%;background:conic-gradient(from 0deg,var(--cyan),var(--pink),var(--cyan));filter:blur(22px);opacity:.5;animation:spinGlow 6s linear infinite}
+@keyframes spinGlow{to{transform:rotate(360deg)}}
+.pointer{position:absolute;top:-4%;left:50%;transform:translateX(-50%);z-index:3;width:12%;filter:drop-shadow(0 5px 8px rgba(0,0,0,.7))}
+#wheel{position:relative;width:100%;height:100%;transition:transform 6.5s cubic-bezier(.12,.72,.08,1)}
+.hub{position:absolute;left:50%;top:50%;width:22%;height:22%;transform:translate(-50%,-50%);border-radius:50%;background:#000;border:3px solid #fff;display:grid;place-items:center;z-index:2;box-shadow:-3px -2px 0 var(--cyan),3px 2px 0 var(--pink)}
+.hub img{width:66%}
+
+.ticker{flex:none;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:9px 12px;backdrop-filter:blur(10px);overflow:hidden;height:56px}
+.ticker .row{display:flex;align-items:center;gap:10px;min-width:0;animation:tin .45s cubic-bezier(.2,1,.3,1)}
+@keyframes tin{from{opacity:0;transform:translateY(14px)}}
+.mini{width:36px;height:36px;flex:none;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--cyan),var(--pink))}
+.mini svg{width:100%;height:100%;border-radius:50%;border:2px solid #000;display:block}
+.ticker .t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticker .t b{color:var(--gold)}
+.ticker small{display:block;color:var(--mut);font-size:11px;font-weight:600}
+.ticker .cnt{margin-left:auto;text-align:right;flex:none}
+.ticker .cnt b{font-size:14px;font-weight:800;display:block}
+
+.btn{flex:none;border:0;cursor:pointer;font:800 17px Inter;color:#fff;background:var(--pink);height:clamp(50px,7vh,58px);border-radius:16px;width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s,background .2s;position:relative;overflow:hidden}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 2.6s infinite}
+@keyframes shine{60%,100%{left:130%}}
+.btn:active{transform:scale(.97)}
+.btn:disabled{background:#2a2a2a;color:var(--mut);cursor:default}
+.btn:disabled::after{display:none}
+.btn:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+
+/* sheets */
+.overlay{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center}
+.overlay.show{display:flex}
+.sheet{width:min(100%,480px);max-height:100dvh;overflow:auto;background:#121212;border:1px solid var(--line);border-bottom:0;border-radius:26px 26px 0 0;text-align:center;
+  padding:10px 20px calc(env(safe-area-inset-bottom) + 18px);animation:up .45s cubic-bezier(.2,1,.3,1)}
+@keyframes up{from{transform:translateY(100%)}}
+.grab{width:38px;height:4px;border-radius:4px;background:#333;margin:0 auto 14px}
+.sheet h3{font-size:clamp(21px,3.2vh,25px);font-weight:900;letter-spacing:-.03em}
+.sheet p{color:var(--mut);font-size:14px;margin-top:2px}
+.prize{position:relative;height:clamp(96px,18vh,150px);margin:6px auto 2px;aspect-ratio:1.1}
+.prize::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(255,197,61,.55),transparent 65%);animation:pulse 2s infinite}
+.prize img{position:relative;width:100%;height:100%;object-fit:contain;animation:wobble 2.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.15);opacity:.7}}
+@keyframes wobble{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-5px) rotate(-3deg)}75%{transform:translateY(-5px) rotate(3deg)}}
+.chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,197,61,.12);color:var(--gold);font-weight:800;border-radius:99px;padding:6px 14px;font-size:14px;margin-bottom:14px}
+.chip img{width:18px}
+
+.profile{display:flex;align-items:center;gap:13px;background:#0a0a0a;border:1px solid var(--line);border-radius:18px;padding:12px;text-align:left;margin-bottom:12px}
+.ava{width:58px;height:58px;flex:none;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,var(--cyan),var(--pink))}
+.ava img,.ava svg{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2.5px solid #0a0a0a;display:block;background:#222}
+.profile .nm{font-weight:800;font-size:16px;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden}
+.profile .nm span{overflow:hidden;text-overflow:ellipsis}
+.profile .nm svg{width:15px;flex:none}
+.profile .hd{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile .fl{display:flex;gap:14px;margin-top:4px;font-size:12px;color:var(--mut)}
+.profile .fl b{color:#fff;font-weight:800}
+
+.field{position:relative}
+.field span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--mut);font-weight:700}
+input{width:100%;font:600 16px Inter;height:52px;padding:0 14px 0 33px;border-radius:14px;border:1.5px solid var(--line);background:var(--s2);color:#fff;outline:none;transition:border .2s}
+input:focus{border-color:var(--pink)}
+input::placeholder{color:#666}
+.err{color:var(--pink);font-size:12px;min-height:18px;text-align:left;margin-top:5px;font-weight:600}
+.sheet .btn{margin-top:4px}
+
+.steps{list-style:none;text-align:left;display:none;margin:2px 0 6px}
+.steps li{display:flex;align-items:center;gap:12px;padding:7px 2px;color:#666;font-weight:700;font-size:14px;transition:color .3s}
+.steps li i{width:22px;height:22px;border-radius:50%;border:2px solid #333;flex:none;display:grid;place-items:center;font-style:normal;font-size:12px}
+.steps li.run{color:#fff}.steps li.run i{border-color:var(--cyan);border-right-color:transparent;animation:rot .7s linear infinite}
+.steps li.ok{color:#fff}.steps li.ok i{background:var(--cyan);border-color:var(--cyan);color:#000}
+.steps li.ok i::after{content:"✓";font-weight:900}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.okb{width:56px;height:56px;border-radius:50%;background:var(--cyan);color:#000;display:grid;place-items:center;margin:0 auto 10px;box-shadow:-3px -2px 0 #fff,3px 2px 0 var(--pink);animation:pop .5s cubic-bezier(.2,1.8,.4,1)}
+@keyframes pop{from{transform:scale(0)}}
+.okb svg{width:28px}
+.amount{font-size:clamp(40px,6.5vh,52px);font-weight:900;letter-spacing:-.045em;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 12px;font-variant-numeric:tabular-nums}
+.amount img{width:.9em}
+.bal{display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;border:1px solid var(--line);border-radius:14px;padding:12px 15px;margin-bottom:12px;font-size:13px;color:var(--mut);font-weight:600}
+.bal b{color:#fff;font-size:15px;display:flex;align-items:center;gap:6px}
+.bal img{width:18px}
+
+.fall{position:fixed;top:-60px;z-index:30;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(600deg)}}
+
+@media(min-width:600px){.overlay{align-items:center}.sheet{border-radius:26px;border-bottom:1px solid var(--line)}.grab{display:none}.sheet{padding-top:24px}}
+@media(max-height:640px){.tag{display:none}.ticker{height:50px;padding:6px 10px}.mini{width:32px;height:32px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}#wheel{transition-duration:.01s}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i></div>
+
+<div class="app">
+  <div class="top">
+    <div class="logo"><img src="https://i.ibb.co/wZT5ctvn/auracoin.png" alt="">AuraDrop</div>
+    <div class="pill"><i></i><span id="online">12,483</span>&nbsp;live</div>
+  </div>
+
+  <div class="head">
+    <div class="tag">🔥 LIMITED EVENT · TODAY ONLY</div>
+    <h1>BLACK FRIDAY</h1>
+    <div class="sub">Spin & win <b>free AuraCoins</b> — every spin wins</div>
+    <div class="timer">Ends in <b id="th">00</b>:<b id="tm">00</b>:<b id="ts">00</b></div>
+  </div>
+
+  <div class="area" id="area">
+    <div class="wheel-wrap" id="ww">
+      <svg class="pointer" viewBox="0 0 40 50"><path d="M20 48 L4 14 A17 17 0 1 1 36 14 Z" fill="#fe2c55" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="20" cy="17" r="6" fill="#fff"/></svg>
+      <svg id="wheel" viewBox="0 0 420 420"></svg>
+      <div class="hub"><img src="https://i.ibb.co/wZT5ctvn/auracoin.png" alt=""></div>
+    </div>
+  </div>
+
+  <div class="ticker" id="ticker"></div>
+  <button class="btn" id="spin">Spin the wheel · 1 free spin</button>
+</div>
+
+<!-- WIN -->
+<div class="overlay" id="win"><div class="sheet">
+  <div class="grab"></div>
+  <h3>You won the Mystery Chest!</h3>
+  <p>Confirm your profile to unlock it</p>
+  <div class="prize"><img src="https://i.ibb.co/FCqcNXz/chest.png" alt=""></div>
+  <div class="chip"><img src="https://i.ibb.co/wZT5ctvn/auracoin.png" alt="">10,000 AuraCoins inside</div>
+  <div class="profile">
+    <div class="ava"><img class="me" src="avatar.jpg" alt=""></div>
+    <div style="min-width:0;flex:1">
+      <div class="nm"><span id="pName">Your name</span></div>
+      <div class="hd" id="pHandle">@username</div>
+      <div class="fl" id="pFol"></div>
+    </div>
+  </div>
+  <div id="formArea">
+    <div class="field"><span>@</span><input id="name" maxlength="24" placeholder="Enter your username" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>
+    <div class="err" id="err"></div>
+  </div>
+  <ul class="steps" id="steps">
+    <li><i></i>Verifying account</li>
+    <li><i></i>Opening Mystery Chest</li>
+    <li><i></i>Sending coins to your balance</li>
+  </ul>
+  <button class="btn" id="confirm">Confirm</button>
+</div></div>
+
+<!-- DONE -->
+<div class="overlay" id="done"><div class="sheet">
+  <div class="grab"></div>
+  <div class="okb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <h3>Coins added!</h3>
+  <p>Your Black Friday reward has been credited</p>
+  <div class="amount"><img src="https://i.ibb.co/wZT5ctvn/auracoin.png" alt="">+<span id="cnt">0</span></div>
+  <div class="profile">
+    <div class="ava"><img class="me" src="avatar.jpg" alt=""></div>
+    <div style="min-width:0;flex:1"><div class="nm" id="dName"></div><div class="hd" id="dHandle"></div></div>
+  </div>
+  <div class="bal"><span>New balance</span><b><img src="https://i.ibb.co/wZT5ctvn/auracoin.png" alt="">10,000</b></div>
+  <button class="btn" id="close">Awesome!</button>
+</div></div>
+
+<script>
+{
+const COIN='https://i.ibb.co/wZT5ctvn/auracoin.png',CHEST='https://i.ibb.co/FCqcNXz/chest.png';
+const $=id=>document.getElementById(id),pick=a=>a[Math.floor(Math.random()*a.length)],fmt=n=>n.toLocaleString('en-US');
+
+/* wheel drawing */
+const segs=[
+  {t:'100',type:'coin',c:'#151515'},
+  {t:'500',type:'coin',c:'#25f4ee',ink:'#000'},
+  {t:'250',type:'coin',c:'#151515'},
+  {t:'CHEST',type:'chest',c:'#fe2c55'},
+  {t:'50',type:'coin',c:'#151515'},
+  {t:'1,000',type:'coin',c:'#25f4ee',ink:'#000'},
+  {t:'TRY AGAIN',type:'none',c:'#151515'},
+  {t:'2,500',type:'coin',c:'#262626'}
+];
+const N=segs.length,A=360/N,cx=210,cy=210,R=200,WIN=3;
+const pt=(r,a)=>[cx+r*Math.sin(a*Math.PI/180),cy-r*Math.cos(a*Math.PI/180)];
+let w=`<defs><radialGradient id="sh" r=".5"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient></defs><circle cx="210" cy="210" r="209" fill="#000"/>`;
+segs.forEach((s,i)=>{
+  const a0=i*A,a1=a0+A,[x0,y0]=pt(R,a0),[x1,y1]=pt(R,a1),m=a0+A/2,ink=s.ink||'#fff';
+  w+=`<path d="M${cx},${cy} L${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} Z" fill="${s.c}" stroke="#000" stroke-width="3"/><g transform="rotate(${m} ${cx} ${cy})">`;
+  if(s.type==='coin')w+=`<image href="${COIN}" x="${cx-20}" y="${cy-182}" width="40" height="40"/>`;
+  if(s.type==='chest')w+=`<image href="${CHEST}" x="${cx-32}" y="${cy-192}" width="64" height="64"/>`;
+  w+=`<text x="${cx}" y="${cy-(s.type==='none'?150:118)}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="900" font-size="${s.t.length>5?14:21}" fill="${ink}">${s.t}</text></g>`;
+});
+w+=`<circle cx="210" cy="210" r="200" fill="url(#sh)"/><circle cx="210" cy="210" r="205" fill="none" stroke="#fff" stroke-opacity=".15" stroke-width="2"/>`;
+for(let i=0;i<16;i++){const[x,y]=pt(206,i*22.5+11.25);w+=`<circle cx="${x}" cy="${y}" r="3.4" fill="${i%2?'#25f4ee':'#fe2c55'}"><animate attributeName="opacity" values="1;.2;1" dur="1.2s" begin="${i%2*.6}s" repeatCount="indefinite"/></circle>`}
+const wheel=$('wheel');wheel.innerHTML=w;
+
+/* fit wheel into remaining space — no scrolling */
+const area=$('area'),ww=$('ww');
+const fit=()=>{const s=Math.max(160,Math.min(area.clientWidth*.92,area.clientHeight*.94,460));ww.style.width=ww.style.height=s+'px'};
+new ResizeObserver(fit).observe(area);fit();
+
+/* timer */
+const tick=()=>{const n=new Date(),e=new Date(n);e.setHours(23,59,59,999);const d=Math.max(0,e-n)/1000,p=v=>String(Math.floor(v)).padStart(2,'0');
+  $('th').textContent=p(d/3600);$('tm').textContent=p(d%3600/60);$('ts').textContent=p(d%60)};
+tick();setInterval(tick,1000);
+let online=12483,winners=38412;
+setInterval(()=>{online+=Math.floor(Math.random()*41)-18;$('online').textContent=fmt(online)},1800);
+
+/* generated avatars for the winners ticker */
+function avatar(){
+  const bg=pick(['#fe2c55','#25f4ee','#7a5cff','#ffb800','#1fd17a','#ff7a3d','#3d8bff','#c13cff']);
+  const skin=pick(['#f8d5b8','#e9b48a','#c88a5e','#8d5a3b']),hc=pick(['#141414','#5a3a22','#d9a441','#b8462c','#ededed','#ff5fb0']);
+  const hair=pick([`<path d="M22 46 Q24 18 50 16 Q78 18 78 46 Q72 30 50 30 Q30 30 22 46Z" fill="${hc}"/>`,`<path d="M18 74 Q14 16 50 14 Q86 16 82 74 L76 74 Q78 34 50 30 Q24 34 24 74Z" fill="${hc}"/>`,`<circle cx="50" cy="20" r="12" fill="${hc}"/><path d="M24 44 Q26 22 50 22 Q74 22 76 44 Q62 30 50 32 Q36 32 24 44Z" fill="${hc}"/>`]);
+  return `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="${bg}"/><path d="M14 100 Q16 76 50 74 Q84 76 86 100Z" fill="#111"/><ellipse cx="50" cy="48" rx="26" ry="28" fill="${skin}"/>${hair}<circle cx="40" cy="50" r="3.5" fill="#141414"/><circle cx="60" cy="50" r="3.5" fill="#141414"/><path d="M42 62 Q50 70 58 62" stroke="#7a2e1f" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+}
+const users=['jake.mp4','sofiaa_x','dmytro.fx','lil.kate','maxxy','noah_23','emmaa.v','vladdd','ellie.wav','artem_k','mia.rose','leo.x'];
+const prizes=['Mystery Chest','500 coins','1,000 coins','250 coins','2,500 coins','100 coins'];
+const tk=()=>{winners++;$('ticker').innerHTML=`<div class="row"><div class="mini">${avatar()}</div><div style="min-width:0"><div class="t">@${pick(users)}${Math.floor(Math.random()*90+10)} won <b>${pick(prizes)}</b></div><small>just now</small></div></div><div class="cnt"><b>${fmt(winners)}</b><small>winners today</small></div>`};
+tk();let tkI=setInterval(tk,2600);
+
+/* spin → always the chest */
+let spun=false;
+$('spin').onclick=()=>{
+  if(spun)return;spun=true;
+  const b=$('spin');b.disabled=true;b.textContent='Spinning…';
+  const jit=(Math.random()*2-1)*(A/2-7);
+  wheel.style.transform=`rotate(${360*8-(WIN*A+A/2)+jit}deg)`;
+};
+wheel.addEventListener('transitionend',()=>{
+  $('spin').textContent='Mystery Chest won! 🎉';
+  rain(36);setTimeout(()=>{$('pFol').innerHTML=`<span><b>${Math.floor(Math.random()*900+40)}</b> followers</span><span><b>${(Math.random()*40+1.2).toFixed(1)}K</b> likes</span>`;$('win').classList.add('show')},800);
+});
+
+/* avatar.jpg with fallback if the file is missing */
+document.querySelectorAll('img.me').forEach(im=>{const fb=()=>{const d=document.createElement('div');d.innerHTML=avatar();im.replaceWith(d.firstChild)};
+  if(im.complete&&!im.naturalWidth)fb();else im.onerror=fb});
+
+const clean=v=>v.trim().toLowerCase().replace(/^@/,'').replace(/\s+/g,'_').replace(/[^a-z0-9._]/g,'');
+const handle=v=>'@'+(clean(v)||'username');
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const verified=`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#20d5ec"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+$('name').oninput=()=>{const v=$('name').value;$('pName').textContent=v.trim().replace(/^@/,'')||'Your name';$('pHandle').textContent=handle(v);$('err').textContent=''};
+$('name').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('name').blur();$('confirm').click()}};
+
+$('confirm').onclick=()=>{
+  const v=$('name').value.trim().replace(/^@/,'');
+  if(v.length<2){$('err').textContent='Please enter your username';$('name').focus();return}
+  $('name').blur();
+  const c=$('confirm');c.disabled=true;c.textContent='Processing…';
+  $('formArea').style.display='none';$('steps').style.display='block';
+  const li=[...$('steps').children];let i=0;
+  const step=()=>{if(i>0)li[i-1].className='ok';if(i===li.length){setTimeout(finish,500);return}li[i].className='run';i++;setTimeout(step,900+Math.random()*500)};
+  step();
+  function finish(){
+    $('win').classList.remove('show');
+    $('dName').innerHTML=`<span>${esc(v)}</span>${verified}`;$('dHandle').textContent=handle(v);
+    $('done').classList.add('show');count();rain(70);
+  }
+};
+const count=()=>{const T=10000,t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/1900);$('cnt').textContent=fmt(Math.floor(T*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)};
+function rain(n){for(let i=0;i<n;i++){const c=document.createElement('img');c.src=COIN;c.className='fall';c.style.left=Math.random()*100+'vw';
+  c.style.width=(22+Math.random()*28)+'px';c.style.animationDuration=(1.8+Math.random()*2)+'s';c.style.animationDelay=Math.random()*1.2+'s';
+  document.body.appendChild(c);setTimeout(()=>c.remove(),5500)}}
+$('close').onclick=()=>{$('done').classList.remove('show');rain(25)};
+}
+</script>
+</body>
+</html>
